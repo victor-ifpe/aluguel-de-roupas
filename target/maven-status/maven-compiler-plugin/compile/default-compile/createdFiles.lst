@@ -1,0 +1,5 @@
+br\edu\ifpe\jaboatao\ts\entidades\Cliente.class
+br\edu\ifpe\jaboatao\ts\entidades\Locacao.class
+br\edu\ifpe\jaboatao\ts\utils\ManipulandoDatas.class
+br\edu\ifpe\jaboatao\ts\entidades\Roupa.class
+br\edu\ifpe\jaboatao\ts\servicos\LocacaoService.class
