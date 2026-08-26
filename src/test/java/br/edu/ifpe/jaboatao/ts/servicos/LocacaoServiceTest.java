@@ -1,12 +1,13 @@
 package br.edu.ifpe.jaboatao.ts.servicos;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -175,8 +176,8 @@ public class LocacaoServiceTest {
 		// Cenario
 		Cliente cliente = new Cliente("Fabio");
 		List<Roupa> roupas = Arrays.asList(
-			new Roupa("Bermuda", "GG", 1, 15.0),
-			new Roupa("Calça", "P", 8, 12.0));
+				new Roupa("Bermuda", "GG", 1, 15.0),
+				new Roupa("Calça", "P", 8, 12.0));
 
 		// Acao
 		Locacao locacao = service.alugarRoupa(cliente, roupas);
@@ -190,4 +191,84 @@ public class LocacaoServiceTest {
 		// Verificao
 		assertEquals(roupasEstoqueMaiorZero.size(), roupas.size());
 	}
+
+	@Test
+	@DisplayName("Deve dar desconto 10% para 2 roupas")
+	public void teste06() {
+		// cenario
+		Cliente cli = new Cliente("Cliente 01");
+		List<Roupa> roupas = Arrays.asList(
+				new Roupa("Camisa", "G", 4, 100.0), // 100
+				new Roupa("Bermuda", "P", 10, 100.0)// 90
+		);
+
+		// acao
+		Locacao locacao = service.alugarRoupa(cli, roupas);
+
+		// verificao
+		assertEquals(190.0, locacao.getValorLocacao());
+
+	}
+
+	@Test
+	@DisplayName("Deve dar desconto 15% para 3 roupas")
+	public void teste07() {
+		// cenario
+		Cliente cli = new Cliente("Cliente 01");
+		List<Roupa> roupas = Arrays.asList(
+					new Roupa("Camisa", "G", 4, 100.0), // 100
+				new Roupa("Bermuda", "P", 10, 100.0),// 90
+				new Roupa("Camisa", "G", 4, 100.0) // 85
+		);
+
+		// acao
+		Locacao locacao = service.alugarRoupa(cli, roupas);
+
+		// verificao
+		assertEquals(275.0, locacao.getValorLocacao());
+
+	}
+
+	@Test
+	@DisplayName("Deve dar desconto 25% para 4 roupas")
+	public void teste08() {
+		// cenario
+		Cliente cli = new Cliente("Cliente 01");
+		List<Roupa> roupas = Arrays.asList(
+				new Roupa("Camisa", "G", 4, 100.0), // 100
+				new Roupa("Bermuda", "P", 10, 100.0),// 90
+				new Roupa("Camisa", "G", 4, 100.0), // 85
+				new Roupa("Bermuda", "P", 10, 100.0)// 75
+		);
+
+		// acao
+		Locacao locacao = service.alugarRoupa(cli, roupas);
+
+		// verificao
+		assertEquals(350.0, locacao.getValorLocacao());
+
+	}
+
+	@Test
+	@DisplayName("Deve dar desconto 50% para 5 roupas")
+	public void teste09() {
+		// cenario
+		Cliente cli = new Cliente("Cliente 01");
+		List<Roupa> roupas = Arrays.asList(
+				new Roupa("Camisa", "G", 4, 100.0), // 100
+				new Roupa("Bermuda", "P", 10, 100.0),// 90
+				new Roupa("Camisa", "G", 4, 100.0), // 85
+				new Roupa("Bermuda", "P", 10, 100.0),// 75
+				new Roupa("Bermuda", "P", 10, 100.0)// 50
+		);
+
+		// acao
+		Locacao locacao = service.alugarRoupa(cli, roupas);
+
+		// verificao
+		assertEquals(400.0, locacao.getValorLocacao());
+
+	}
+
+	
 }

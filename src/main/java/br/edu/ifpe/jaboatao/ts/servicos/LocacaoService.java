@@ -18,8 +18,26 @@ public class LocacaoService {
 		locacao.setDataLocacao(new Date());
 
 		double valorTotal = 0;
-		for (Roupa roupa : roupas) {
-			valorTotal += roupa.getValor();
+		double valorRoupa = 0;
+		for (int i = 0; i < roupas.size(); i++) {
+			valorRoupa = roupas.get(i).getValor();
+			if (i == 1) {
+				valorRoupa *= 0.90;
+			}
+
+			if (i == 2) {
+				valorRoupa *= 0.85;
+			}
+
+			if (i == 3) {
+				valorRoupa *= 0.75;
+			}
+
+			if (i == 4) {
+				valorRoupa *= 0.50;
+			}
+
+			valorTotal += valorRoupa;
 		}
 		locacao.setValorLocacao(valorTotal);
 
