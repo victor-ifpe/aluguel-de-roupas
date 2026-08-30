@@ -12,33 +12,49 @@ import br.edu.ifpe.jaboatao.ts.utils.ManipulandoDatas;
 public class LocacaoService {
 
 	public Locacao alugarRoupa(Cliente cliente, List<Roupa> roupas) {
+
+		// Tratamento de excecoes
+		for (Roupa roupa : roupas) {
+
+			// Verifica se existe roupa
+			if (roupa == null) {
+				throw new IllegalArgumentException("Exceção: Roupa nula.");
+			}
+
+			// Verifica se o valor da roupa é maior que zero
+			if (roupa.getValor() <= 0) {
+				throw new IllegalArgumentException("Exceção: Verificar valor da roupa.");
+			}
+		}
+
 		Locacao locacao = new Locacao();
 		locacao.setRoupas(roupas);
 		locacao.setCliente(cliente);
 		locacao.setDataLocacao(new Date());
 
+		// Calcula o valor total das roupas
 		double valorTotal = 0;
-		double valorRoupa = 0;
-		for (int i = 0; i < roupas.size(); i++) {
-			valorRoupa = roupas.get(i).getValor();
-			if (i == 1) {
-				valorRoupa *= 0.90;
-			}
 
-			if (i == 2) {
-				valorRoupa *= 0.85;
-			}
-
-			if (i == 3) {
-				valorRoupa *= 0.75;
-			}
-
-			if (i == 4) {
-				valorRoupa *= 0.50;
-			}
-
-			valorTotal += valorRoupa;
+		for (Roupa roupa : roupas) {
+			valorTotal += roupa.getValor();
 		}
+
+		// 3 roupas = 10% de desconto
+		if (roupas.size() == 3) {
+			valorTotal *= 0.90;
+		}
+
+		// 4 ou mais roupas = 15% de desconto
+		else if (roupas.size() >= 4) {
+			valorTotal *= 0.85;
+		}
+
+		// Valor da locação maior ou igual a R$ 199,00
+		// ganha mais 20% de desconto
+		if (valorTotal >= 199.00) {
+			valorTotal *= 0.80;
+		}
+
 		locacao.setValorLocacao(valorTotal);
 
 		// Definir a entrega para 3 dias depois.
@@ -50,6 +66,5 @@ public class LocacaoService {
 
 		return locacao;
 	}
-
 
 }
