@@ -1,11 +1,12 @@
-package br.edu.ifpe.jaboatao.ts.servicos;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+package br.edu.ifpe.jaboatao.ts.servicos;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,59 +15,62 @@ import br.edu.ifpe.jaboatao.ts.entidades.Locacao;
 import br.edu.ifpe.jaboatao.ts.entidades.Roupa;
 
 public class LocacaoServiceTest {
+	private LocacaoService locacaoService;
+
+	@BeforeEach
+	public void setUp() {
+		locacaoService = new LocacaoService();
+	}
 
 	// Teste 4.a
 	@Test
-	@DisplayName("Questao 4.a - Verificar valor da locacao com 2 roupas.")
-	public void verificarValorLocacaoComDuasRoupas() {
+	@DisplayName("Questao 4.a - Verificar se o valor da locacao está sendo calculado corretamente para 3 roupas")
+	public void verificarValorLocacaoComTresRoupas() {
 
 		// Cenario
 		Cliente cliente = new Cliente("Breno");
 		List<Roupa> roupas = Arrays.asList(
 				new Roupa("Camisa", "G", 4, 12.0),
-				new Roupa("Bermuda", "P", 10, 10.0));
+				new Roupa("Bermuda", "P", 10, 10.0),
+				new Roupa("Bermuda", "P", 10, 12.0));
 
 		// Acao
-		LocacaoService locacaoService = new LocacaoService();
 		Locacao locacao = locacaoService.alugarRoupa(cliente, roupas);
 
 		// Verificao
-		assertEquals(22.0, locacao.getValorLocacao());
+		assertEquals(34.0, locacao.getValorLocacao());
 	}
 
 	// Teste 4.b.1
 	@Test
-	@DisplayName("Questao 4.b.1 - Verificando exceção para lista de roupas vazia usando try/catch")
+	@DisplayName("Questao 4.b.1 - Verificando exceção para roupa com valor menor que 10 usando try/catch")
 	public void verificarValorRoupaTryCatch() {
 
 		// Cenario
 		Cliente cliente = new Cliente("Felipe");
-		List<Roupa> roupas = Arrays.asList();
+		List<Roupa> roupas = Arrays.asList(
+				new Roupa("Camisa", "G", 4, 8.0));
 
 		try {
 			// Acao
-			LocacaoService locacaoService = new LocacaoService();
-			locacaoService.alugarRoupa(cliente, roupas);
+			Locacao locacao = locacaoService.alugarRoupa(cliente, roupas);
 
 		} catch (IllegalArgumentException e) {
 
 			// Verificao
-			assertEquals("Exceção: Roupa nula.", e.getMessage());
+			assertEquals("Exceção: Verificar valor da roupa.", e.getMessage());
 		}
 	}
 
 	// Teste 4.b.2
 	@Test
-	@DisplayName("Questao 4.b.2 - Verificando exceção para roupa com valor <= 0 usando assertThrows")
+	@DisplayName("Questao 4.b.2 - Verificando exceção para roupa com valor menor que 10 assertThrows")
 	public void verificarValorRoupaAssertThrows() {
 
 		// Cenario
 		Cliente cliente = new Cliente("João");
 		List<Roupa> roupas = Arrays.asList(
-				new Roupa("Camisa", "G", 4, 0.0));
-
-		// Acao
-		LocacaoService locacaoService = new LocacaoService();
+				new Roupa("Camisa", "G", 4, 9.0));
 
 		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> locacaoService.alugarRoupa(cliente, roupas));
@@ -76,49 +80,8 @@ public class LocacaoServiceTest {
 	}
 
 	@Test
-	@DisplayName("Questao 5.a - Verificar desconto de 10% para 3 roupas")
-	public void verificarDescontoTresRoupas() {
-
-		// Cenario
-		Cliente cliente = new Cliente("Breno");
-
-		List<Roupa> roupas = Arrays.asList(
-				new Roupa("Camisa", "G", 4, 50.0),
-				new Roupa("Bermuda", "P", 10, 50.0),
-				new Roupa("Casaco", "M", 8, 50.0));
-
-		// Acao
-		LocacaoService locacaoService = new LocacaoService();
-		Locacao locacao = locacaoService.alugarRoupa(cliente, roupas);
-
-		// Verificacao
-		assertEquals(135.0, locacao.getValorLocacao());
-	}
-
-	@Test
-	@DisplayName("Questao 5.b - Verificar desconto de 15% para 4 ou mais roupas")
-	public void verificarDescontoQuatroRoupas() {
-
-		// Cenario
-		Cliente cliente = new Cliente("Breno");
-
-		List<Roupa> roupas = Arrays.asList(
-				new Roupa("Camisa", "G", 4, 50.0),
-				new Roupa("Bermuda", "P", 10, 50.0),
-				new Roupa("Casaco", "M", 8, 50.0),
-				new Roupa("Calca", "M", 2, 50.0));
-
-		// Acao
-		LocacaoService locacaoService = new LocacaoService();
-		Locacao locacao = locacaoService.alugarRoupa(cliente, roupas);
-
-		// Verificacao
-		assertEquals(170.0, locacao.getValorLocacao());
-	}
-
-	@Test
-	@DisplayName("Questao 5.c - Verificar desconto extra de 20% para valor maior ou igual a R$199")
-	public void verificarDescontoExtra() {
+	@DisplayName("Quem alugar 5 (cinco) ou mais roupas ganhará 10%.")
+	public void verificarDescontoCincoMaisRoupas() {
 
 		// Cenario
 		Cliente cliente = new Cliente("Breno");
@@ -126,13 +89,14 @@ public class LocacaoServiceTest {
 		List<Roupa> roupas = Arrays.asList(
 				new Roupa("Camisa", "G", 4, 100.0),
 				new Roupa("Bermuda", "P", 10, 100.0),
-				new Roupa("Casaco", "M", 8, 100.0));
+				new Roupa("Casaco", "M", 8, 100.0),
+				new Roupa("Camisa", "G", 4, 100.0),
+				new Roupa("Bermuda", "P", 10, 100.0));
 
 		// Acao
-		LocacaoService locacaoService = new LocacaoService();
 		Locacao locacao = locacaoService.alugarRoupa(cliente, roupas);
 
 		// Verificacao
-		assertEquals(216.0, locacao.getValorLocacao());
+		assertEquals(450.0, locacao.getValorLocacao());
 	}
 }

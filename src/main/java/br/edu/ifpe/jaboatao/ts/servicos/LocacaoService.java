@@ -16,13 +16,8 @@ public class LocacaoService {
 		// Tratamento de excecoes
 		for (Roupa roupa : roupas) {
 
-			// Verifica se existe roupa
-			if (roupa == null) {
-				throw new IllegalArgumentException("Exceção: Roupa nula.");
-			}
-
-			// Verifica se o valor da roupa é maior que zero
-			if (roupa.getValor() <= 0) {
+			// Verifica se o valor da roupa é maior que 10
+			if (roupa.getValor() < 10) {
 				throw new IllegalArgumentException("Exceção: Verificar valor da roupa.");
 			}
 		}
@@ -39,20 +34,9 @@ public class LocacaoService {
 			valorTotal += roupa.getValor();
 		}
 
-		// 3 roupas = 10% de desconto
-		if (roupas.size() == 3) {
+		// Se o cliente alugar 5 ou mais roupas, aplica um desconto de 10%
+		if (roupas.size() >= 5) {
 			valorTotal *= 0.90;
-		}
-
-		// 4 ou mais roupas = 15% de desconto
-		else if (roupas.size() >= 4) {
-			valorTotal *= 0.85;
-		}
-
-		// Valor da locação maior ou igual a R$ 199,00
-		// ganha mais 20% de desconto
-		if (valorTotal >= 199.00) {
-			valorTotal *= 0.80;
 		}
 
 		locacao.setValorLocacao(valorTotal);
